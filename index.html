@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>The Massey Family's Epic Germany Christmas Trip</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #050814;
+      --card-bg: #111827;
+      --card-bg-alt: #0b1220;
+      --accent: #f97316;
+      --accent-soft: rgba(249,115,22,0.15);
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --border: #1f2937;
+      --radius-lg: 18px;
+      --radius-sm: 10px;
+      --shadow-soft: 0 18px 45px rgba(0,0,0,0.65);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Helvetica Neue", Arial, sans-serif;
+      background: radial-gradient(circle at top, #111827 0, #020617 45%, #000 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 18px 12px 40px;
+      position: relative;
+      overflow-x: hidden;
+    }
+    .music-bar {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    #music-toggle {
+      border-radius: 999px;
+      border: 1px solid rgba(249,115,22,0.9);
+      background: radial-gradient(circle at top left, rgba(249,115,22,0.55), rgba(15,23,42,0.95));
+      color: #fefce8;
+      font-size: 0.76rem;
+      padding: 5px 14px;
+      cursor: pointer;
+    }
+    /* Snow canvas behind everything */
+    #snow-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 520px;
+      background: linear-gradient(145deg, #020617 0, #020617 40%, #020617 60%, #000 100%);
+      border-radius: 28px;
+      padding: 16px 16px 24px;
+      border: 1px solid rgba(148,163,184,0.18);
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .app-shell::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(59,130,246,0.6) 0, transparent 55%),
+        radial-gradient(circle at 100% 0%, rgba(236,72,153,0.45) 0, transparent 55%);
+      opacity: 0.28;
+      z-index: -1;
+    }
+
+      header {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 8px;
+            text-align: center;   /* ← ADD THIS */
+            align-items: center;  /* ← OPTIONAL but helps center the pills too */
+      
+    }
+
+    .trip-title {
+      font-size: 1rem;              /* a touch bigger, still fits */
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+
+      /* warm golden color */
+      color: #fff7d6;
+
+      /* multi-layer glow for “golden” effect */
+      text-shadow:
+        0 0 4px rgba(255, 215, 140, 0.9),
+        0 0 10px rgba(255, 196, 0, 0.8),
+        0 0 20px rgba(248, 153, 47, 0.7);
+    }
+    .trip-dates {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .city-pills {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 6px;
+      margin-top: 6px;
+      overflow-x: auto;              /* lets you scroll to see Vienna */
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+    .city-pills::-webkit-scrollbar { display: none; }
+
+    .city-pill {
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.4);
+      background: radial-gradient(circle at top left, rgba(148,163,184,0.3), rgba(15,23,42,0.8));
+      backdrop-filter: blur(10px);
+      white-space: nowrap;
+    }
+
+    .city-pill.main {
+      border-color: rgba(249,115,22,0.8);
+      background: linear-gradient(90deg, #dc2626, #f97316, #22c55e);
+      color: #fefce8;
+    }
+
+    .day-nav {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 8px 2px 6px;
+      margin-bottom: 10px;
+      scrollbar-width: none;
+      border-bottom: 1px solid rgba(148,163,184,0.2);
+    }
+    .day-nav::-webkit-scrollbar { display: none; }
+
+    .day-chip {
+      border: 1px solid rgba(148,163,184,0.45);
+      background: rgba(15,23,42,0.9);
+      border-radius: 999px;
+      padding: 6px 11px;
+      font-size: 0.72rem;
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .day-chip span.day-num {
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    .day-chip.active {
+      border-color: rgba(249,115,22,0.9);
+      background: radial-gradient(circle at top left, rgba(249,115,22,0.55), rgba(15,23,42,0.95));
+      color: #fff;
+    }
+
+    .day-chip.active span.day-num {
+      color: #fff;
+    }
+
+    .day-chip .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(249,115,22,0.9);
+    }
+
+    main {
+      padding-right: 4px;
+      padding-bottom: 4px;
+      scrollbar-width: thin;
+    }
+
+    .day-card {
+      background: linear-gradient(145deg, rgba(15,23,42,0.96), rgba(15,23,42,0.9));
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      padding: 14px 13px 12px;
+      margin-bottom: 12px;
+      box-shadow: 0 10px 32px rgba(15,23,42,0.85);
+      display: none;                /* only show active day */
+    }
+
+    .day-card.active-day {
+      display: block;
+    }
+
+    .day-card.highlight {
+      border-color: rgba(249,115,22,0.75);
+      box-shadow: 0 0 0 1px rgba(249,115,22,0.5), 0 18px 45px rgba(0,0,0,0.85);
+    }
+
+    /* Header inside each card */
+    .day-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+
+    .day-header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .day-date {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #f9fafb;
+    }
+
+    .day-summary {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .day-header-right {
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .day-hotel-pill {
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      border: 1px solid rgba(249,115,22,0.9);
+      background: rgba(249,115,22,0.18);
+      color: #fed7aa;
+      text-align: right;
+      max-width: 190px;
+      line-height: 1.3;
+    }
+
+    .section {
+      margin-top: 6px;
+      padding-top: 6px;
+      border-top: 1px dashed rgba(55,65,81,0.9);
+    }
+
+    .section:first-of-type {
+      border-top: none;
+      padding-top: 2px;
+    }
+
+    .section-title {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: rgba(148,163,184,0.9);
+      margin-bottom: 4px;
+    }
+
+    .section-body {
+      font-size: 0.82rem;
+      line-height: 1.4;
+      color: #e5e7eb;
+    }
+
+    .section-body strong {
+      color: #f9fafb;
+      font-weight: 600;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 5px;
+    }
+
+    .tag {
+      font-size: 0.7rem;
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(55,65,81,0.85);
+      color: var(--muted);
+    }
+
+    .tag.primary {
+      border-color: rgba(249,115,22,0.9);
+      background: rgba(249,115,22,0.12);
+      color: #fed7aa;
+    }
+
+    .note {
+      font-size: 0.76rem;
+      color: #9ca3af;
+      margin-top: 5px;
+    }
+
+    .footer {
+      font-size: 0.7rem;
+      color: #6b7280;
+      text-align: center;
+      margin-top: 6px;
+    }
+
+    /* Link color for dark mode */
+    a {
+      color: #ffa94d;
+      font-weight: 600;
+      text-decoration: underline;
+    }
+    a:visited {
+      color: #ff8800;
+    }
+    a:hover {
+      text-decoration: none;
+    }
+
+    @media (max-width: 380px) {
+      .trip-title {
+        font-size: 0.86rem;
+      }
+      .day-chip {
+        padding-inline: 8px;
+      }
+    }
+  </style>
+</head>
+
+
+  <body>
+
+  <!-- 🎵 Background Music -->
+  <audio id="bg-music" loop autoplay>
+    <source src="most-wonderful.mp3" type="audio/mpeg" />
+  </audio>
+
+  <div class="app-shell">
+    
+  <!-- Snow background -->
+    <canvas id="snow-canvas"></canvas>
+
+    <div class="app-shell">
+      <!-- Christmas music control -->
+      <div class="music-bar">
+        <button id="music-toggle">▶ Play Christmas music</button>
+      </div>
+
+      <audio id="bg-music" loop>
+        <!-- put your own mp3/ogg file in the same folder and update src -->
+        <source src="christmas.mp3" type="audio/mpeg" />
+      </audio>
+    <header>
+      <div class="trip-title">The Massey's Epic Christmas 2025</div>
+      <div class="trip-dates">
+        Sun, 14 Dec – Fri, 26 Dec
+      </div>
+      <div class="holiday-icon">🎄🎅🏼🤶🏂❄️⛷️🥂</div>
+      <div class="city-pills">
+        <span class="city-pill main">
+          Munich → Elmau → St. Anton → Innsbruck → Salzburg → Vienna
+        </span>
+      </div>
+    </header>
+
+    <nav class="day-nav" id="dayNav">
+      <button class="day-chip active" data-target="day-14">
+        <span class="dot"></span>
+        <span class="day-num">14</span> Sun
+      </button>
+      <button class="day-chip" data-target="day-15"><span class="day-num">15</span> Mon</button>
+      <button class="day-chip" data-target="day-16"><span class="day-num">16</span> Tue</button>
+      <button class="day-chip" data-target="day-17"><span class="day-num">17</span> Wed</button>
+      <button class="day-chip" data-target="day-18"><span class="day-num">18</span> Thu</button>
+      <button class="day-chip" data-target="day-19"><span class="day-num">19</span> Fri</button>
+      <button class="day-chip" data-target="day-20"><span class="day-num">20</span> Sat</button>
+      <button class="day-chip" data-target="day-21"><span class="day-num">21</span> Sun</button>
+      <button class="day-chip" data-target="day-22"><span class="day-num">22</span> Mon</button>
+      <button class="day-chip" data-target="day-23"><span class="day-num">23</span> Tue</button>
+      <button class="day-chip" data-target="day-24"><span class="day-num">24</span> Wed</button>
+      <button class="day-chip" data-target="day-25"><span class="day-num">25</span> Thu</button>
+      <button class="day-chip" data-target="day-26"><span class="day-num">26</span> Fri</button>
+    </nav>
+
+    <main id="days">
+      <!-- 14 Dec – Depart LAX -->
+      <section id="day-14" class="day-card active-day">
+        <div class="day-header">
+          <div class="day-header-left">
+            <div class="day-date">Sun, Dec 14</div>
+            <div class="day-summary">LAX → MUC Overnight</div>
+          </div>
+          <div class="day-header-right">
+            <div class="day-hotel-pill">In Transit</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Travel Day</div>
+          <div class="section-body">
+            <strong>Flight:</strong> 1:45 pm Delta 9468 LAX → Amsterdam →  Munich Delta 9552 lands 1:35pm (Monday).
+            <div class="tag-row">
+              <span class="tag primary">Flight</span>
+              <span class="tag">Overnight</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Notes</div>
+          <div class="section-body">
+            Overnight flight — we arrive the next day (Dec 15). Plan for sleep on the plane and 9 hour time change.
+          </div>
+        </div>
+      </section>
+
+      <!-- 15 Dec – Arrival in Munich -->
+      <section id="day-15" class="day-card">
+        <div class="day-header">
+          <div class="day-header-left">
+            <div class="day-date">Mon, Dec 15</div>
+            <div class="day-summary">Munich • Arrival Day</div>
+          </div>
+          <div class="day-header-right">
+            <div class="day-hotel-pill">Beyond by Geisel</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Flight Plans</div>
+          <div class="section-body">
+            <strong>Mom and Dad:</strong> Arrive 1:35pm DL9552 via AMS. 
+           <br> <br><strong>Duke and Goldie:</strong> Depart 11:10am LHR to MUC Lufthansa LH2473.<strong> Booking #7ABHYJ.</strong> Arrive 2:00pm. 
+      
+            <br><br>Take the <strong>S8 train</strong> from <strong>Flughafen Munchen (airport)</strong> toward Herrsching and exit at <strong>Marienplatz</strong>. 38 minute ride. 
+            <div class="tag-row">
+              <span class="tag primary">Arrival</span>
+              <span class="tag">Daytime</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Hotel</div>
+          <div class="section-body">
+            <strong>Beyond by Geisel</strong> – check in and settle (Night 1 in Munich Old Town, right on Marienplatz).
+            <div class="tag-row">
+              <span class="tag primary">Munich Base</span>
+              <span class="tag">Marienplatz</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Afternoon & Evening</div>
+          <div class="section-body">
+            Arrive mid-afternoon. Easy options if you feel up to it:
+            Marienplatz Christmas Market, Residenz Christmas Village, and a relaxed city walk. <br>
+            <br>
+            <a href="https://www.google.com/maps/d/u/0/viewer?fbclid=IwY2xjawOdFhNleHRuA2FlbQIxMQBzcnRjBmFwcF9pZA80MDk5NjI2MjMwODU2MDkAAR4a60dY5xoNZjOQTKkU9SYKBAIN9G4JJMD8l5BPBDpi74VCqq987GzOb21zpw_aem_Z70vbx-S2ZS9_BfgS6w_NQ&mid=1duKu2yPtLACoSdZH1pBvheCFGFbGAGc&ll=48.141640850786345%2C11.577071479569646&z=14"
+               target="Markets Map" rel="noopener noreferrer">
+              Markets Map
+            </a>
+            <br><br>
+            <div class="tag-row">
+              <span class="tag primary">Munich</span>
+              <span class="tag">Christmas Markets</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Dinner</div>
+          <div class="section-body">
+            <strong><a href="https://weinhaus-neuner.de/en/speisekarte"
+                target="Weinhaus Neuner" rel="noopener noreferrer">
+              Weinhaus Neuner
+             </a> </strong> – 9pm cozy historic restaurant, reservation for your first night in Munich. Need to cancel by 12pm if not going.
+            <div class="tag-row">
+              <span class="tag primary">Munich</span>
+              <span class="tag">Dinner</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Notes</div>
+          <div class="section-body">
+            Keep the evening flexible depending on jet-lag – option to head back to the hotel early or enjoy a night-cap nearby.
+          </div>
+        </div>
+      </section>
+
+      <!-- 16 Dec – Munich Day -->
+      <section id="day-16" class="day-card">
+        <div class="day-header">
+          <div class="day-header-left">
+            <div class="day-date">Tue, Dec 16</div>
+            <div class="day-summary">Munich · Markets & Atelier</div>
+          </div>
+          <div class="day-header-right">
+            <div class="day-hotel-pill">Beyond by Geisel</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Morning</div>
+          <div class="section-body">
+            Explore Munich’s top Christmas markets and nearby landmarks:
+            Marienplatz Market, Residenz Christmas Village, Viktualienmarkt, and the old town area. <br><br><strong>Marienplatz clock 11am and 12pm daily.</strong> Arrive 10-15' early to get a good spot.
+            <br><br>
+            <a href="https://www.google.com/maps/d/u/0/viewer?fbclid=IwY2xjawOdFhNleHRuA2FlbQIxMQBzcnRjBmFwcF9pZA80MDk5NjI2MjMwODU2MDkAAR4a60dY5xoNZjOQTKkU9SYKBAIN9G4JJMD8l5BPBDpi74VCqq987GzOb21zpw_aem_Z70vbx-S2ZS9_BfgS6w_NQ&mid=1duKu2yPtLACoSdZH1pBvheCFGFbGAGc&ll=48.141640850786345%2C11.577071479569646&z=14"
+               target="Markets Map" rel="noopener noreferrer">
+              Markets Map
+            </a>
+            <br><br>
+            <div class="tag-row">
+              <span class="tag primary">Munich</span>
+              <span class="tag">Christmas Markets</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Afternoon</div>
+          <div class="section-body">
+            Optional: museum visits <br> <a href="https://www.deutsches-museum.de/en/"
+               target="Deutsche Museum" rel="noopener noreferrer">
+              Deutsche Museum
+            </a>
+            
+            <br> <a href="https://tkts.bmw-welt.com/en"
+               target="BMW Museum" rel="noopener noreferrer">
+              BMW Museum
+            </a>
+            <br> <a href="https://www.residenz-muenchen.de/englisch/residenc/index.htm"
+               target="Munich Residence" rel="noopener noreferrer">
+              Munich Residence
+            </a>
+            <br>
+            Beer Halls: Hofbrauhaus, Augustiner-Keller <br>Englischer Garten walk
+            or warming up in a café near Odeonsplatz.
+            <div class="tag-row">
+              <span class="tag">Museums</span>
+              <span class="tag">City Walk</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Dinner</div>
+          <div class="section-body">
+            <strong> <strong><a href="https://www.bayerischerhof.de/en/fun-meets-fine-dining/restaurants-bars/restaurants/atelier.html"
+                  target="Atelier" rel="noopener noreferrer">
+                Atelier
+    </a> </strong>
+              
+            </strong> 7pm - 2⭐ Michelin at Bayerischer Hof. One of Munich’s top fine dining experiences.
+            Must cancel 72 hours in advance.
+            <div class="tag-row">
+              <span class="tag primary">Fine Dining</span>
+              <span class="tag">Michelin</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Notes</div>
+          <div class="section-body">
+            Slow-paced day to recover from travel and enjoy Munich at your own rhythm.
+          </div>
+        </div>
+      </section>
+
+      <!-- 17 Dec – Munich → Schloss Elmau -->
+      <section id="day-17" class="day-card">
+        <div class="day-header">
+          <div class="day-header-left">
+            <div class="day-date">Wed, Dec 17</div>
+            <div class="day-summary">Transfer to Schloss Elmau</div>
+          </div>
+          <div class="day-header-right">
+            <div class="day-hotel-pill">Schloss Elmau</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Transport</div>
+          <div class="section-body">
+            <strong>Train:</strong> Booked 11:32-12:55 Munich Hbf to Garmisch +
+            <strong>Transfer:</strong> 14:02-14:15 to Klais (no reservation), confirmed 4:15 hotel van to <strong>Schloss Elmau</strong>.
+            <div class="tag-row">
+              <span class="tag primary">Train + Taxi</span>
+              <span class="tag">Book seats if possible</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Hotel</div>
+          <div class="section-body">
+            <strong><a href="https://www.schloss-elmau.de/en/"
+                target="Schloss Elmau" rel="noopener noreferrer">
+              Schloss Elmau
+             </a> </strong>
+           – check-in and explore the property.
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Activities</div>
+          <div class="section-body">
+            Afternoon at Elmau: spa, pool, lounge, short winter walk if light allows.
+          </div>
+        </div>
+      </section>
+
+      <!-- 18 Dec – Elmau -->
+      <section id="day-18" class="day-card">
+        <div class="day-header">
+          <div class="day-header-left">
+            <div class="day-date">Thu, Dec 18</div>
+            <div class="day-summary">Spa & Winter Activities</div>
+          </div>
+          <div class="day-header-right">
+            <div class="day-hotel-pill">Schloss Elmau</div>
+          </div>
+        </div>
+
+
+        <div class="section">
+          <div class="section-title">Activities</div>
+          <div class="section-body">
+            Winter activities at Elmau: spa, sauna, yoga, snowshoeing or sledding as conditions allow.
+          </div>
+          <div class="section">
+            <div class="section-title">Dinner</div>
+            <div class="section-body">
+            
+              <strong><a href="https://www.schloss-elmau.de/en/restaurants/ikigai/"
+                  target="Ikigai" rel="noopener noreferrer">
+                Ikigai
+               </a> </strong>
+              </strong> 7pm - 2⭐ Michelin – Japanese / fusion restaurant at Elmau. Cancel 48 hours in advance.
+            </div>
+          </div>
+
+          
+        </div>
+      </section>
+
+      <!-- 19 Dec – Elmau → St Anton -->
+      <section id="day-19" class="day-card">
+        <div class="day-header">
+          <div class="day-header-left">
+            <div class="day-date">Fri, Dec 19</div>
+            <div class="day-summary">Travel to St. Anton · Ski Afternoon</div>
+          </div>
+          <div class="day-header-right">
+            <div class="day-hotel-pill">Valluga Hotel</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Transport</div>
+          <div class="section-body">
+            <strong>Alps Express </strong> 6am van from hotel to St Anton ~2 hour ride
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Hotel</div>
+          <div class="section-body">
+            <strong><a href="https://vallugahotel.at"
+                target="Valluga Hotel" rel="noopener noreferrer">
+              Valluga Hotel
+             </a> </strong>
+             - ski hotel check-in.
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Activities</div>
+          <div class="section-body">
+            Rent equipment and ski in afternoon. <br>
+            <br>Après-ski at <a href="https://youtube.com/shorts/DZU0a5OZuIw?si=DeghaWT0rH-8OFBS"
+               target="MooserWirt🤘" rel="noopener noreferrer">
+              MooserWirt🤘
+            </a>
+             / Krazy Kanguruh if desired. <br><br>
+            <a href="https://www.skiresort.info/ski-resort/st-antonst-christophstubenlechzuerswarthschroecken-ski-arlberg/trail-map/#&gid=1&pid=1"
+               target="Ski Map" rel="noopener noreferrer">
+              Ski Map
+            </a>
+           
+            
+          
+            
+            <br><br>Evening stroll through village.
+          </div>
+        </div>
+      </section>
+
+      <!-- 20 Dec – St Anton ski -->
+      <section id="day-20" class="day-card">
+        <div class="day-header">
+          <div class="day-header-left">
+            <div class="day-date">Sat, Dec 20</div>
+            <div class="day-summary">Full Ski Day & Après Rage</div>
+          </div>
+          <div class="day-header-right">
+            <div class="day-hotel-pill">Valluga Hotel</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Activities</div>
+          <div class="section-body">
+            Options: Galzig, Gampen, Kapall, Rendl depending on weather and legs. <br><br>
+            <a href="https://www.skiresort.info/ski-resort/st-antonst-christophstubenlechzuerswarthschroecken-ski-arlberg/trail-map/#&gid=1&pid=1"
+               target="Ski Map" rel="noopener noreferrer">
+              Ski Map
+            </a>
+            <br><br>Après-ski at <a href="https://youtube.com/shorts/DZU0a5OZuIw?si=DeghaWT0rH-8OFBS"
+               target="MooserWirt🤘" rel="noopener noreferrer">
+              MooserWirt🤘
+  </a>
+             / Krazy Kanguruh if desired.
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Dinner</div>
+          <div class="section-body">
+           <strong><a href="https://www.museum-restaurant.at"
+                target="Museum Restaurant" rel="noopener noreferrer">
+              Museum Restaurant 
+             </a> </strong>7:15pm reservations with penalty for no-shows.
+          </div>
+        </div>
+      </section>
+
+      <!-- 21 Dec – St Anton → Innsbruck -->
+      <section id="day-21" class="day-card">
+        <div class="day-header">
+          <div class="day-header-left">
+            <div class="day-date">Sun, Dec 21</div>
+            <div class="day-summary">Rail to Innsbruck · Old Town & Markets</div>
+          </div>
+          <div class="day-header-right">
+            <div class="day-hotel-pill">Hotel Goldener Adler</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Transport</div>
+          <div class="section-body">
+            <strong>No train reservation:</strong><br>
+            • St. Anton → Innsbruck Hbf (leaves every hour)<br>
+            • Depart: <strong>morning</strong> <br>
+            • Arrive:  <strong>~mid-morning</strong><br><br>
+
+            <strong>When to leave hotel:</strong><br>
+            • Leave Valluga Hotel around <strong>45–60 minutes</strong> before departure  
+              to allow time to walk/shuttle to the station, find the platform, and grab coffee.
+
+            <div class="tag-row">
+              <span class="tag primary">Railjet / EC</span>
+              <span class="tag">~1 hr ride</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Hotel</div>
+          <div class="section-body">
+            <strong>Hotel Goldener Adler</strong> — Innsbruck Old Town.
+            <div class="tag-row">
+              <span class="tag primary">Old Town</span>
+              <span class="tag">Historic Hotel</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Activities</div>
+          <div class="section-body">
+            Explore Innsbruck Christmas markets, old town, and riverside area.  
+            Optional: Nordkette cable car if weather is clear.
+            <div class="tag-row">
+              <span class="tag">Markets</span>
+              <span class="tag">Old Town</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 22 Dec – Innsbruck → Salzburg -->
+      <section id="day-22" class="day-card">
+        <div class="day-header">
+          <div class="day-header-left">
+            <div class="day-date">Mon, Dec 22</div>
+            <div class="day-summary">Polar Express to Salzburg</div>
+          </div>
+          <div class="day-header-right">
+            <div class="day-hotel-pill">Boutiquehotel am Dom</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Transport</div>
+          <div class="section-body">
+            <strong>Train reservation:</strong><br>
+            • Innsbruck Hbf → Schwarzach → Salzburg Hbf<br>
+            • Depart: <strong>12:20pm</strong><br>
+            • Arrive: <strong>3:48pm</strong><br>
+            • Tickets booked<br><br>
+
+            <strong>When to leave hotel:</strong><br>
+            • Leave Goldener Adler around <strong>11:35–11:45</strong>  
+              (short walk to Innsbruck Hbf — gives time for platform, snacks, and boarding).
+
+            <div class="tag-row">
+              <span class="tag primary">Railjet</span>
+              <span class="tag">Reserved Seats</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Hotel</div>
+          <div class="section-body">
+            <strong>Boutiquehotel am Dom</strong> — Salzburg Old Town.
+            <div class="tag-row">
+              <span class="tag primary">Old Town</span>
+              <span class="tag">Central</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Activities</div>
+          <div class="section-body">
+            Salzburg Old Town stroll, Christmas markets, Hohensalzburg Fortress views, café stop.
+            <div class="tag-row">
+              <span class="tag">Markets</span>
+              <span class="tag">Old Town</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 23 Dec – Salzburg -->
+      <section id="day-23" class="day-card">
+        <div class="day-header">
+          <div class="day-header-left">
+            <div class="day-date">Tue, Dec 23</div>
+            <div class="day-summary">City Stroll Markets & Music</div>
+          </div>
+          <div class="day-header-right">
+            <div class="day-hotel-pill">Boutiquehotel am Dom</div>
+          </div>
+        </div>
+
+        
+
+        <div class="section">
+          <div class="section-title">Activities</div>
+          <div class="section-body">
+            More Salzburg wandering; optional <strong><a href="https://www.stille-nacht-museum.at/en/chapel/"
+                target="Silent Night Chapel" rel="noopener noreferrer">
+              Silent Night Chapel
+             </a> </strong> visit in Oberndorf if timing/transport works; evening markets.
+          </div>
+        </div>
+        <div class="section">
+          <div class="section-title">Dinner</div>
+          <div class="section-body">
+
+            <strong><a href="https://meisslundschadn.at/en/meissl-schadn-salzburg/"
+                    target="Meissl & Schadn" rel="noopener noreferrer">
+                  Meissl & Schadn
+                 </a> </strong>
+
+               7pm - traditional Austrian wiener schnitzel in a cozy brasserie setting. Cancel anytime.
+                <div class="tag-row">
+                  <span class="tag primary">Salzburg</span>
+                  <span class="tag">Classic Austrian</span>
+                </div>
+              </div>
+            </div>
+            
+          </section>
+
+            
+
+      <!-- 24 Dec – Salzburg → Vienna -->
+      <section id="day-24" class="day-card">
+        <div class="day-header">
+          <div class="day-header-left">
+            <div class="day-date">Wed, Dec 24</div>
+            <div class="day-summary">Railjet to Vienna · Christmas Eve & Veranda Dinner</div>
+          </div>
+          <div class="day-header-right">
+            <div class="day-hotel-pill">Hotel zur Wiener Staatsoper</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Transport</div>
+          <div class="section-body">
+            <strong>Train reservation:</strong><br>
+            • Salzburg Hbf → Wien Hbf (Railjet, Business/1st class)  
+            &nbsp;&nbsp;Depart: <strong>11:07</strong> · Arrive: <strong>13:22</strong>  
+            &nbsp;&nbsp;Business class booked.<br><br>
+
+            <strong>When to leave hotel:</strong><br>
+            • Leave Boutiquehotel am Dom around <strong>10:20–10:30</strong>.  
+              Walk or taxi to Salzburg Hbf, find the platform, board early,  
+              and get settled in your reserved seats.
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Hotel</div>
+          <div class="section-body">
+            <strong>Hotel zur Wiener Staatsoper</strong> – central Vienna, near the opera.
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Dinner</div>
+          <div class="section-body">
+            <strong><a href="https://www.sanssouci-wien.com/en/veranda-vienna/"
+                target="Veranda Brasserie" rel="noopener noreferrer">
+              Veranda Brasserie 
+             </a> </strong> – 6pm Christmas Eve dinner at the elegant brasserie. Cancel 72 hours ahead to avoid penalty.
+            <div class="tag-row">
+              <span class="tag primary">Vienna</span>
+              <span class="tag">Holiday Dinner</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Activities</div>
+          <div class="section-body">
+            Christmas Eve atmosphere in Vienna – stroll past St. Stephen’s Cathedral, Graben lights, possible church music.
+          </div>
+        </div>
+      </section>
+
+      <!-- 25 Dec – Vienna Christmas Day -->
+      <section id="day-25" class="day-card">
+        <div class="day-header">
+          <div class="day-header-left">
+            <div class="day-date">Thu, Dec 25</div>
+            <div class="day-summary">Christmas Day · Opera</div>
+          </div>
+          <div class="day-header-right">
+            <div class="day-hotel-pill">Hotel zur Wiener Staatsoper</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Hotel</div>
+          <div class="section-body">
+            <strong>Hotel zur Wiener Staatsoper</strong> (2nd night).
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Activities</div>
+          <div class="section-body">
+            Slow Christmas morning; Vienna streets & cafés.<br> <br> 
+            <strong>La Boheme</strong> at the <strong><a href="https://www.wiener-staatsoper.at/en/calendar/detail/la-boheme/2025-12-25/"
+                target="Vienna State Opera" rel="noopener noreferrer">
+              Vienna State Opera
+             </a> </strong> at 6:30pm.
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Notes</div>
+          <div class="section-body note">
+            Holiday schedules – many shops/restaurants closed or limited hours. Confirm dinner plans in advance.
+          </div>
+        </div>
+      </section>
+
+      <!-- 26 Dec – Departure -->
+      <section id="day-26" class="day-card">
+        <div class="day-header">
+          <div class="day-header-left">
+            <div class="day-date">Fri, Dec 26</div>
+            <div class="day-summary">Vienna → LAX · Travel Home</div>
+          </div>
+          <div class="day-header-right">
+            <div class="day-hotel-pill">Flight Home</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Transport</div>
+          <div class="section-body">
+            <strong>Flight:</strong> ~12:25 pm VIE → ~6:45 pm LAX (check airline / connection details).  
+            Leave for airport around 9:30–10:00 am depending on transport and security.
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Notes</div>
+          <div class="section-body note">
+            Pack up, hotel checkout, keep passports/boarding passes handy. Last Austrian pastry before heading home.
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="footer">
+      Tap a date chip to jump to that day · Scroll for full details
+    </div>
+  </div>
+
+  <script>
+    // --- Day switching (no scrolling, so nothing overlaps) ---
+    const chips = document.querySelectorAll(".day-chip");
+    const cards = document.querySelectorAll(".day-card");
+
+    chips.forEach(chip => {
+      chip.addEventListener("click", () => {
+        const targetId = chip.dataset.target;
+        const card = document.getElementById(targetId);
+        if (!card) return;
+
+        chips.forEach(c => c.classList.remove("active"));
+        chip.classList.add("active");
+
+        cards.forEach(c => c.classList.remove("active-day"));
+        card.classList.add("active-day");
+      });
+    });
+
+    // --- Simple falling snow background ---
+    const canvas = document.getElementById("snow-canvas");
+    const ctx = canvas.getContext("2d");
+    let width, height;
+    const flakes = [];
+
+    function resizeCanvas() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    function createFlakes(count) {
+      for (let i = 0; i < count; i++) {
+        flakes.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          r: Math.random() * 2 + 1,
+          speed: Math.random() * 0.7 + 0.3,
+          drift: Math.random() * 0.5 - 0.25
+        });
+      }
+    }
+    createFlakes(120);
+
+    function drawSnow() {
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = "rgba(255,255,255,0.9)";
+
+      flakes.forEach(f => {
+        ctx.beginPath();
+        ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+        ctx.fill();
+
+        f.y += f.speed;
+        f.x += f.drift;
+
+        if (f.y > height + 10) {
+          f.y = -10;
+          f.x = Math.random() * width;
+        }
+        if (f.x > width + 5) f.x = -5;
+        if (f.x < -5) f.x = width + 5;
+      });
+
+      requestAnimationFrame(drawSnow);
+    }
+
+    drawSnow();
+    
+    // --- Background music toggle ---
+    const music = document.getElementById("bg-music");
+    const musicBtn = document.getElementById("music-toggle");
+    let musicPlaying = false;
+
+    if (music && musicBtn) {
+      musicBtn.addEventListener("click", async () => {
+        try {
+          if (!musicPlaying) {
+            await music.play();
+            musicPlaying = true;
+            musicBtn.textContent = "⏸ Pause Christmas music";
+          } else {
+            music.pause();
+            musicPlaying = false;
+            musicBtn.textContent = "▶ Play Christmas music";
+          }
+        } catch (e) {
+          console.log("Playback blocked:", e);
+        }
+      });
+    }
+  </script>
+</body>
+</html>
