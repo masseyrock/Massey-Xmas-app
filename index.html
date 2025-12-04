@@ -398,15 +398,17 @@
         </div>
       </header>
 
-      <nav class="day-nav" id="dayNav">
-        <button class="day-chip" data-target="day-11"><span class="day-num">11</span> Thu</button>
-        <button class="day-chip" data-target="day-12"><span class="day-num">12</span> Fri</button>
-        <button class="day-chip" data-target="day-13"><span class="day-num">13</span> Sat</button>
+<nav class="day-nav" id="dayNav">
+  <button class="day-chip active" data-target="day-11">
+    <span class="dot"></span>
+    <span class="day-num">11</span> Thu
+  </button>
+  <button class="day-chip" data-target="day-12"><span class="day-num">12</span> Fri</button>
+  <button class="day-chip" data-target="day-13"><span class="day-num">13</span> Sat</button>
 
-        <button class="day-chip active" data-target="day-14">
-          <span class="dot"></span>
-          <span class="day-num">14</span> Sun
-        </button>
+  <button class="day-chip" data-target="day-14">
+    <span class="day-num">14</span> Sun
+  </button>
         <button class="day-chip" data-target="day-15"><span class="day-num">15</span> Mon</button>
         <button class="day-chip" data-target="day-16"><span class="day-num">16</span> Tue</button>
         <button class="day-chip" data-target="day-17"><span class="day-num">17</span> Wed</button>
@@ -424,7 +426,7 @@
       <main id="days">
 
         <!-- 11 Dec – Goldie GEG → LHR -->
-        <section id="day-11" class="day-card">
+        <section id="day-11" class="day-card active-day">
           <div class="day-header">
             <div class="day-header-left">
               <div class="day-date">Thu, Dec 11</div>
@@ -531,7 +533,7 @@
         </section>
 
         <!-- 14 Dec – Depart LAX -->
-        <section id="day-14" class="day-card active-day">
+  <section id="day-14" class="day-card">
           <div class="day-header">
             <div class="day-header-left">
               <div class="day-date">Sun, Dec 14</div>
