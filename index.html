@@ -217,7 +217,6 @@
       box-shadow: 0 0 0 1px rgba(249,115,22,0.5), 0 18px 45px rgba(0,0,0,0.85);
     }
 
-
 /* Locked day behavior */
 .day-card.locked .real-content {
   display: none;
@@ -236,6 +235,7 @@
 .day-card.locked.unlocked .locked-message {
   display: none;
 }
+
 
     
     /* Header inside each card */
@@ -893,7 +893,10 @@
       </section>
 
       <!-- 23 Dec – Salzburg -->
-<section id="day-23" class="day-card locked" data-passcode="ELF123">
+<section id="day-23" class="day-card locked"
+         data-passcode="ELF123"
+         onclick="handleUnlock(this)">
+
   <div class="day-header">
     <div class="day-header-left">
       <div class="day-date">Tue, Dec 23</div>
@@ -1160,5 +1163,24 @@
       });
     }
   </script>
+
+    <script>
+  function handleUnlock(card) {
+    // already unlocked? do nothing
+    if (card.classList.contains('unlocked')) return;
+
+    const expected = card.dataset.passcode || '';
+    const entered = prompt('Enter the passcode for this day:');
+
+    if (entered === null) return; // user cancelled
+
+    if (entered === expected) {
+      card.classList.add('unlocked');
+    } else {
+      alert('Sorry, that passcode is incorrect.');
+    }
+  }
+</script>
+
 </body>
 </html>
