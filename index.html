@@ -217,21 +217,6 @@
       box-shadow: 0 0 0 1px rgba(249,115,22,0.5), 0 18px 45px rgba(0,0,0,0.85);
     }
 
-    /*Locking day cards*/
-    
-  <div class="day-card locked" data-passcode="ELF123">
-  <div class="day-title">Dec 23 – Secret Surprise Day</div>
-
-  <!-- what people see before unlocking -->
-  <div class="locked-message">🔒 Tap to unlock this day</div>
-
-  <!-- real content, hidden until passcode is correct -->
-  <div class="day-content real-content">
-    <!-- your existing content for that day goes here -->
-    <p>Breakfast at ...</p>
-    <p>Secret activity at ...</p>
-  </div>
-</div>
 
 /* Locked day behavior */
 .day-card.locked .real-content {
@@ -908,48 +893,51 @@
       </section>
 
       <!-- 23 Dec – Salzburg -->
-      <section id="day-23" class="day-card">
-        <div class="day-header">
-          <div class="day-header-left">
-            <div class="day-date">Tue, Dec 23</div>
-            <div class="day-summary">City Stroll Markets & Music</div>
-          </div>
-          <div class="day-header-right">
-            <div class="day-hotel-pill">Boutiquehotel am Dom</div>
-          </div>
+<section id="day-23" class="day-card locked" data-passcode="ELF123">
+  <div class="day-header">
+    <div class="day-header-left">
+      <div class="day-date">Tue, Dec 23</div>
+      <div class="day-summary">City Stroll Markets & Music</div>
+    </div>
+    <div class="day-header-right">
+      <div class="day-hotel-pill">Boutiquehotel am Dom</div>
+    </div>
+  </div>
+
+  <!-- what people see before unlocking -->
+  <div class="locked-message">🔒 Tap to unlock this day</div>
+
+  <!-- real content, hidden until passcode is correct -->
+  <div class="day-content real-content">
+    <div class="section">
+      <div class="section-title">Activities</div>
+      <div class="section-body">
+        More Salzburg wandering; optional
+        <strong><a href="https://www.stille-nacht-museum.at/en/chapel/"
+          target="Silent Night Chapel" rel="noopener noreferrer">
+          Silent Night Chapel
+        </a></strong>
+        visit in Oberndorf if timing/transport works; evening markets.
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Dinner</div>
+      <div class="section-body">
+        <strong><a href="https://meisslundschadn.at/en/meissl-schadn-salzburg/"
+          target="Meissl & Schadn" rel="noopener noreferrer">
+          Meissl & Schadn
+        </a></strong>
+        7pm - traditional Austrian wiener schnitzel in a cozy brasserie setting. Cancel anytime.
+        <div class="tag-row">
+          <span class="tag primary">Salzburg</span>
+          <span class="tag">Classic Austrian</span>
         </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-        
-
-        <div class="section">
-          <div class="section-title">Activities</div>
-          <div class="section-body">
-            More Salzburg wandering; optional <strong><a href="https://www.stille-nacht-museum.at/en/chapel/"
-                target="Silent Night Chapel" rel="noopener noreferrer">
-              Silent Night Chapel
-             </a> </strong> visit in Oberndorf if timing/transport works; evening markets.
-          </div>
-        </div>
-        <div class="section">
-          <div class="section-title">Dinner</div>
-          <div class="section-body">
-
-            <strong><a href="https://meisslundschadn.at/en/meissl-schadn-salzburg/"
-                    target="Meissl & Schadn" rel="noopener noreferrer">
-                  Meissl & Schadn
-                 </a> </strong>
-
-               7pm - traditional Austrian wiener schnitzel in a cozy brasserie setting. Cancel anytime.
-                <div class="tag-row">
-                  <span class="tag primary">Salzburg</span>
-                  <span class="tag">Classic Austrian</span>
-                </div>
-              </div>
-            </div>
-            
-          </section>
-
-            
 
       <!-- 24 Dec – Salzburg → Vienna -->
       <section id="day-24" class="day-card">
