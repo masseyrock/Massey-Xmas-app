@@ -217,6 +217,42 @@
       box-shadow: 0 0 0 1px rgba(249,115,22,0.5), 0 18px 45px rgba(0,0,0,0.85);
     }
 
+    /*Locking day cards*/
+    
+  <div class="day-card locked" data-passcode="ELF123">
+  <div class="day-title">Dec 23 – Secret Surprise Day</div>
+
+  <!-- what people see before unlocking -->
+  <div class="locked-message">🔒 Tap to unlock this day</div>
+
+  <!-- real content, hidden until passcode is correct -->
+  <div class="day-content real-content">
+    <!-- your existing content for that day goes here -->
+    <p>Breakfast at ...</p>
+    <p>Secret activity at ...</p>
+  </div>
+</div>
+
+/* Locked day behavior */
+.day-card.locked .real-content {
+  display: none;
+}
+
+.day-card.locked.unlocked .real-content {
+  display: block;
+}
+
+.day-card.locked .locked-message {
+  font-weight: 600;
+  text-align: center;
+  padding: 0.5rem 0;
+}
+
+.day-card.locked.unlocked .locked-message {
+  display: none;
+}
+
+    
     /* Header inside each card */
     .day-header {
       display: flex;
